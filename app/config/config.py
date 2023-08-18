@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
-DATABASE_URL = "postgresql://vishal:root@localhost:5432/games.db"
+DATABASE_URL = "postgresql://postgres:root@localhost:5432/competition_db"
 
 engine = create_engine(DATABASE_URL)
 

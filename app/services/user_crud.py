@@ -4,7 +4,7 @@ from app.schemas.schema import UserSchema
 
 
 
-#get all user data
+#Get all user data
 def get_all_user(db:Session, skip:int=0, limit:int=100):
     return db.query(User).offset(skip).limit(limit).all()
 
@@ -17,3 +17,26 @@ def create_new_user(db:Session, user:UserSchema):
     db.refresh(new_user)
     return new_user
 
+
+#Get user by id
+def get_user_by_id(db:Session, user_id:int):
+    return db.query(User).filter(User.id == user_id).first()
+
+
+#Update user
+def update_user(id:int, db: Session, name:str, age:int):
+    user_new = get_user_by_id(db,id)
+    user_new.name = name
+    user_new.age = age
+    db.commit()
+    db.refresh(user_new)
+    return user_new
+
+
+#delete user
+def delete_user(id:int, db:Session):
+    user_new = get_user_by_id(db,id)
+    db.delete(user_new)
+    db.commit()
+    
+    

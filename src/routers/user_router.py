@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from app.config.config import SessionLocal
-from app.schemas.schema import UserCreateSchema, UserSchema, UserUpdateSchema
-from app.services.user_crud import create_new_user, delete_all_user, delete_user, get_all_user, get_user_by_id, update_user
+from src.config import SessionLocal
+from src.schemas.user import UserCreateSchema, UserUpdateSchema
+from src.services.user_crud import create_new_user, delete_all_user, delete_user, get_all_user, get_user_by_id, update_user
 from sqlalchemy.orm import Session
 
-from app.models.models import User
+from src.models.user import User
 
 user_router = APIRouter()
 

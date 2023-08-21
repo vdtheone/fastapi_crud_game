@@ -1,6 +1,6 @@
-from app.schemas.schema import EntrySchema
+from src.schemas.entry import EntrySchema
 from sqlalchemy.orm import Session
-from app.models.models import Entry
+from src.models.entry import Entry
 
 
 def get_all_entries(db:Session, skip:int = 0, limit:int = 100):

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from app.models.models import Competition, User
-from app.schemas.schema import CompetitionCreateSchema, CompetitionUpdateSchema
+from src.models.competition import Competition
+from src.models.user import User
+from src.schemas.competition import CompetitionCreateSchema, CompetitionUpdateSchema
 
 
 def get_all_competition(db:Session, skip:int = 0, limit:int = 100):

@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.config.config import SessionLocal
-from app.services.entry_crud import create_entry, delete_all_entry, delete_entry, get_all_entries, get_entry_by_id, update_entry
-from app.models.models import Competition, User
-from app.schemas.schema import EntryCreateSchema, EntryUpdateSchema
+from src.config import SessionLocal
+from src.services.entry_crud import create_entry, delete_all_entry, delete_entry, get_all_entries, get_entry_by_id, update_entry
+from src.models.user import User
+from src.models.competition import Competition
+from src.schemas.entry import EntryCreateSchema, EntryUpdateSchema
 
 entry_router = APIRouter()
 

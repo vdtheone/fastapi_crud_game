@@ -1,10 +1,10 @@
 
 from fastapi import APIRouter, Depends
-from app.config.config import SessionLocal
+from src.config import SessionLocal
 from sqlalchemy.orm import Session
-from app.services.competition_crud import create_competition, delete_all_competition, delete_competition, get_all_competition, get_competition_by_id, update_competiton
-from app.schemas.schema import CompetitionCreateSchema, CompetitionSchema, CompetitionUpdateSchema
-from app.models.models import User
+from src.services.competition_crud import create_competition, delete_all_competition, delete_competition, get_all_competition, get_competition_by_id, update_competiton
+from src.schemas.competition import CompetitionCreateSchema, CompetitionSchema, CompetitionUpdateSchema
+from src.models.user import User
 
 
 competition_router = APIRouter()

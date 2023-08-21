@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Registration</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </head>
+    
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center mb-4">Register</h1>
+                <form action="create" method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age:</label>
+                        <input type="number" class="form-control" id="age" name="age" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<script>
+    document.getElementById("registration-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+
+        axios.post("/user/create", formData)
+            .then(response => {
+                window.location.replace = "login";
+                alert(response);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    });
+</script>

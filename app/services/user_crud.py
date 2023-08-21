@@ -13,11 +13,12 @@ def get_all_user(db:Session, skip:int=0, limit:int=100):
 
 #Create new user
 def create_new_user(db:Session, user:UserSchema):
-    new_user = User(name = user.name, age = user.age)
-    db.add(new_user)
+    db_user = User(**user.model_dump())
+    # new_user = User(name = user.name, age = user.age)
+    db.add(db_user)
     db.commit()
-    db.refresh(new_user)
-    return new_user
+    db.refresh(db_user)
+    return db_user
 
 
 #Get user by id

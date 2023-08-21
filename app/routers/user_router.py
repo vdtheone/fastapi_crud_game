@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 from app.config.config import SessionLocal
 from app.schemas.schema import UserCreateSchema, UserSchema, UserUpdateSchema
 from app.services.user_crud import create_new_user, delete_all_user, delete_user, get_all_user, get_user_by_id, update_user
@@ -7,6 +9,8 @@ from sqlalchemy.orm import Session
 from app.models.models import User
 
 user_router = APIRouter()
+
+templates = Jinja2Templates(directory="templates")
 
 def get_db():
    db = SessionLocal()
@@ -21,10 +25,18 @@ async def get_users(db:Session=Depends(get_db)):
     return all_user
 
 
-@user_router.post("/create/")
-async def create_user(user: UserCreateSchema, db:Session = Depends(get_db)):
-    new_user = create_new_user(db, user)
-    return {"user":new_user,"message":"user created", }
+# @user_router.post("/create/")
+# async def create_user(user: UserCreateSchema, db:Session = Depends(get_db)):
+#     new_user = create_new_user(db, user)
+#     return {"user":new_user, "message":"user created"}
+
+
+@user_router.post("/create")
+async def register_user(name: str = Form(...), age: int = Form(...)):
+    db = SessionLocal()
+    user_data = UserCreateSchema(name=name, age=age)
+    new_user = create_new_user(db, user_data)
+    return {"user":new_user, "message":"user created"}
 
 
 @user_router.get("/user/{id}")
@@ -59,3 +71,13 @@ async def delete_user_(id:int, db:Session = Depends(get_db)):
 async def delete_all(db:Session = Depends(get_db)):
     delete_all_user(db)
     return {"message":"Delete all users"}
+
+
+@user_router.get("/register", response_class=HTMLResponse)
+def registration_page(request: Request):
+    return templates.TemplateResponse("registration.html", {"request": request})
+
+
+@user_router.get("/login", response_class=HTMLResponse)
+def registration_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})

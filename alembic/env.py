@@ -5,7 +5,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.models.models import User, Competition, Entry
+from src.models.user import User
+from src.models.competition import Competition
+from src.models.entry import Entry
 from src.config import Base
 
 # this is the Alembic Config object, which provides

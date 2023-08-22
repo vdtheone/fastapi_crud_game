@@ -29,18 +29,3 @@
 </html>
 
 
-<script>
-    document.getElementById("registration-form").addEventListener("submit", function(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-
-        axios.post("/user/create", formData)
-            .then(response => {
-                window.location.replace = "login";
-                alert(response);
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-    });
-</script>

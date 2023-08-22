@@ -25,18 +25,18 @@ async def get_users(db:Session=Depends(get_db)):
     return all_user
 
 
-# @user_router.post("/create/")
-# async def create_user(user: UserCreateSchema, db:Session = Depends(get_db)):
-#     new_user = create_new_user(db, user)
-#     return {"user":new_user, "message":"user created"}
-
-
-@user_router.post("/create")
-async def register_user(name: str = Form(...), age: int = Form(...)):
-    db = SessionLocal()
-    user_data = UserCreateSchema(name=name, age=age)
-    new_user = create_new_user(db, user_data)
+@user_router.post("/create/")
+async def create_user(user: UserCreateSchema, db:Session = Depends(get_db)):
+    new_user = create_new_user(db, user)
     return {"user":new_user, "message":"user created"}
+
+
+# @user_router.post("/create")
+# async def register_user(name: str = Form(...), age: int = Form(...)):
+#     db = SessionLocal()
+#     user_data = UserCreateSchema(name=name, age=age)
+#     new_user = create_new_user(db, user_data)
+#     return {"user":new_user, "message":"user created"}
 
 
 @user_router.get("/user/{id}")
@@ -73,11 +73,11 @@ async def delete_all(db:Session = Depends(get_db)):
     return {"message":"Delete all users"}
 
 
-@user_router.get("/register", response_class=HTMLResponse)
-def registration_page(request: Request):
-    return templates.TemplateResponse("registration.html", {"request": request})
+# @user_router.get("/register", response_class=HTMLResponse)
+# def registration_page(request: Request):
+#     return templates.TemplateResponse("registration.html", {"request": request})
 
 
-@user_router.get("/login", response_class=HTMLResponse)
-def registration_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+# @user_router.get("/login", response_class=HTMLResponse)
+# def registration_page(request: Request):
+#     return templates.TemplateResponse("login.html", {"request": request})

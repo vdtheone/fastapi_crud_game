@@ -4,13 +4,30 @@ from pydantic import BaseModel
 
 
 class AuthSchema(BaseModel):
-    
-    username: str
+    id : int
+    username : str
     email : str
-    hashed_password : str
+    hashed_password :str
+    is_active : bool
     created_at : datetime
     updated_at : datetime
  
+    class Config:
+        from_attributes = True
+
+
+class AuthCreateSchema(BaseModel):
+    username: str
+    email : str
+    hashed_password : str
+    is_active : bool
+    created_at : datetime
+    updated_at : datetime
 
     class Config:
         from_attributes = True
+
+
+class AuthUpdateSchema(AuthCreateSchema):
+    class Config:
+        form_attributes = True

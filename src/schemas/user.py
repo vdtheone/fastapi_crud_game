@@ -17,14 +17,6 @@ class UserSchema(BaseModel):
         from_attributes = True
 
 
-# class UserCreateSchema(BaseModel):
-#     name: str
-#     age: int
-
-#     class Config:
-#         from_attributes = True
-
-
 class UserCreateSchema(BaseModel):
     auth_id : int
     name : str

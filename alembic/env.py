@@ -8,6 +8,7 @@ from alembic import context
 from src.models.user import User
 from src.models.competition import Competition
 from src.models.entry import Entry
+from src.models.auth import Auth
 from src.config import Base
 
 # this is the Alembic Config object, which provides
@@ -21,7 +22,7 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from mysrc import mymodel
+# from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 

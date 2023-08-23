@@ -20,7 +20,6 @@ class AuthCreateSchema(BaseModel):
     username: str
     email : str
     hashed_password : str
-    is_active : bool
     created_at : datetime
     updated_at : datetime
 
@@ -28,6 +27,18 @@ class AuthCreateSchema(BaseModel):
         from_attributes = True
 
 
-class AuthUpdateSchema(AuthCreateSchema):
+class AuthUpdateSchema(BaseModel):
+    username: str
+    email : str
+    hashed_password : str
+    updated_at : datetime
+    class Config:
+        form_attributes = True
+
+
+class AuthLoginSchema(BaseModel):
+    username:str
+    password:str
+
     class Config:
         form_attributes = True

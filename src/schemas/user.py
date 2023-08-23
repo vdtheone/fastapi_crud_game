@@ -11,7 +11,7 @@ class UserSchema(BaseModel):
     gender : str
     age : int
     date_of_birth : date
-    is_active : bool
+
 
     class Config:
         from_attributes = True
@@ -23,7 +23,6 @@ class UserCreateSchema(BaseModel):
     age : int
     gender : str
     date_of_birth : date
-    is_active : bool
 
     class Config:
         from_attributes = True

@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from src.config import Base
 
 
@@ -9,6 +9,7 @@ class Auth(Base):
     username : str = Column(String, unique=True,index=True)
     email : str = Column(String, unique=True, index=True)
     hashed_password :str = Column(String)
+    is_active : bool = Column(Boolean, default=True)
     created_at : DateTime = Column(DateTime)
     updated_at : DateTime = Column(DateTime)
 

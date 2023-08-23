@@ -14,6 +14,6 @@ class User(Base):
     age = Column(Integer)
     gender = Column(String)
     date_of_birth = Column(Date)
-    is_active = Column(Boolean, default=True)
+    
 
 

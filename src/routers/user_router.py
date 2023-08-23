@@ -52,7 +52,8 @@ async def updat_user(id:int, user:UserUpdateSchema, db: Session = Depends(get_db
     if not existing_user:
         raise HTTPException(status_code=404, detail="Entry not found")
     else:
-        updated_user = update_user(id, db, user.name, user.age)
+        # updated_user = update_user(id, db, user.name, user.age)
+        updated_user = update_user(id, db, user.auth_id, user.name, user.age, user.gender, user.date_of_birth, user.is_active)
         return updated_user
 
 

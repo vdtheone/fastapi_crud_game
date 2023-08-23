@@ -7,7 +7,7 @@ class EntrySchema(BaseModel):
     competition_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EntryCreateSchema(BaseModel):
@@ -15,12 +15,12 @@ class EntryCreateSchema(BaseModel):
     competition_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EntryUpdateSchema(EntryCreateSchema):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 

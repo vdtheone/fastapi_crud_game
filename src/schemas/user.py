@@ -1,24 +1,44 @@
+from datetime import date
 from pydantic import BaseModel
+
 
 
 class UserSchema(BaseModel):
     id: int
-    name: str
-    age: int
+    auth_id : int
+    name : str
+    age : int
+    gender : str
+    age : int
+    date_of_birth : date
+    is_active : bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+
+# class UserCreateSchema(BaseModel):
+#     name: str
+#     age: int
+
+#     class Config:
+#         from_attributes = True
 
 
 class UserCreateSchema(BaseModel):
-    name: str
-    age: int
+    auth_id : int
+    name : str
+    age : int
+    gender : str
+    date_of_birth : date
+    is_active : bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserUpdateSchema(UserCreateSchema):
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 

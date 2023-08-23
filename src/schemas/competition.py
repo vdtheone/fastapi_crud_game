@@ -7,7 +7,7 @@ class CompetitionSchema(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CompetitionCreateSchema(BaseModel):
@@ -15,12 +15,12 @@ class CompetitionCreateSchema(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CompetitionUpdateSchema(CompetitionCreateSchema):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 

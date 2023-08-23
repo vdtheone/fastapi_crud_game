@@ -1,7 +1,7 @@
 {
 	"folders": {},
 	"connections": {
-		"postgres-jdbc-18a210848e9-30ce0ecf7935851c": {
+		"postgres-jdbc-18a178fe8e7-7a61fec7c7521f0a": {
 			"provider": "postgresql",
 			"driver": "postgres-jdbc",
 			"name": "competition_db",
@@ -11,6 +11,22 @@
 				"port": "5432",
 				"database": "competition_db",
 				"url": "jdbc:postgresql://localhost:5432/competition_db",
+				"configurationType": "MANUAL",
+				"home": "postgresql-x64-15",
+				"type": "dev",
+				"auth-model": "native"
+			}
+		},
+		"postgres-jdbc-18a209933fe-4e03293d78800583": {
+			"provider": "postgresql",
+			"driver": "postgres-jdbc",
+			"name": "postgres",
+			"save-password": true,
+			"configuration": {
+				"host": "localhost",
+				"port": "5432",
+				"database": "postgres",
+				"url": "jdbc:postgresql://localhost:5432/postgres",
 				"configurationType": "MANUAL",
 				"home": "postgresql-x64-15",
 				"type": "dev",

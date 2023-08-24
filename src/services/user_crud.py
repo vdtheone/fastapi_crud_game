@@ -71,7 +71,8 @@ def user_with_competition(id:int, db:Session):
             blank_dict = {}
             competition_list.append(entry.competition.name)
             blank_dict['name'] = entry.competition.name
-            if not any(d['name'] == entry.competition.name for d in c_list):
+
+            if not any(competition_name['name'] == entry.competition.name for competition_name in c_list):
                 c_list.append(blank_dict)
     
         userResponce = UserWithEntry(

@@ -9,5 +9,8 @@ class Competition(Base):
     __tablename__ = "competitions"
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"))  # Foreign key reference
     name = Column(String)
+
+    # Establishing the relationship with Entry
+    entries = relationship("Entry", back_populates="competition")
+

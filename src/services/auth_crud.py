@@ -39,7 +39,7 @@ def login(db:Session, auth:AuthLoginSchema):
 def get_all(db:Session, skip:int=0, limit:int=100):
     users = db.query(Auth).offset(skip).limit(limit).all()
     total_user = db.query(Auth).count()
-    return {"users":users, "total_user":total_user}
+    return users
 
 
 def get_by_id(db:Session, id:int):

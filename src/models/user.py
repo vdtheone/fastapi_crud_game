@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Date, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, ForeignKey, Integer, String
 
 from sqlalchemy.orm import relationship
 
@@ -14,6 +14,13 @@ class User(Base):
     age = Column(Integer)
     gender = Column(String)
     date_of_birth = Column(Date)
+    
+
+    # Establishing the relationship with Auth
+    auth = relationship("Auth", back_populates="user")
+    
+    # Establishing the relationship with Entry
+    entries = relationship("Entry", back_populates="user")
     
 
 

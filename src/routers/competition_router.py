@@ -1,10 +1,11 @@
 
 from fastapi import APIRouter, Depends
+from src.models.competition import Competition
 from src.config import SessionLocal
 from sqlalchemy.orm import Session
 from src.services.competition_crud import create_competition, delete_all_competition, delete_competition, get_all_competition, get_competition_by_id, update_competiton
 from src.schemas.competition import CompetitionCreateSchema, CompetitionSchema, CompetitionUpdateSchema
-from src.models.user import User
+
 
 
 competition_router = APIRouter()
@@ -25,34 +26,31 @@ async def all_competition(db:Session = Depends(get_db)):
 
 @competition_router.post('/create/')
 async def create(competition:CompetitionCreateSchema, db:Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.id == competition.user_id).first()
-    if db_user:
-        new_competition = create_competition(db, competition)
-        return {"competition":new_competition, "message":"competition created"}
-    else:
-        return {"message":"User not found for this id"}
+    new_competition = create_competition(db, competition)
+    return {"competition":new_competition, "message":"competition created"}
+    
 
 
 @competition_router.get("/competition/{id}", response_model=CompetitionSchema)
 async def competition_by_id(id:int, db:Session = Depends(get_db)):
     competition = get_competition_by_id(db,id)
-    return competition
-
-
-@competition_router.put("/update/{id}")
-async def update(id:int, competition:CompetitionUpdateSchema, db:Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.id == competition.user_id).first()
-    if db_user:
-        updated_competition = update_competiton(db, competition, id)
-        return {"updated_competition":updated_competition, "message":"Competition is updated"}
+    if competition is None:
+        return {"message":"Not found"}
     else:
-        return {"message":"Competition is not updated"}
+        return competition
+
+
+@competition_router.put("/competition/{id}")
+async def update(id:int, competition:CompetitionUpdateSchema, db:Session = Depends(get_db)):
+    updated_competition = update_competiton(db, competition, id)
+    return updated_competition
+  
 
 
 @competition_router.delete("/delete/{id}")
 async def delete(id:int, db:Session = Depends(get_db)):
     deleted_competition = delete_competition(db,id)
-    return {"message":"competition deleted"}
+    return {"message":deleted_competition}
 
 
 @competition_router.delete("/delete_all/")

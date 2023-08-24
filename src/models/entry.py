@@ -14,3 +14,10 @@ class Entry(Base):
         Integer, ForeignKey("competitions.id")
     )  # Foreign key reference
 
+    # Establishing the relationship with User
+    user = relationship("User", back_populates="entries")
+    
+    # Establishing the relationship with Competition
+    competition = relationship("Competition", back_populates="entries")
+
+    

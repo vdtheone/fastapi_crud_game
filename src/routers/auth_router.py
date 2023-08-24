@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from src.services.auth_crud import delete_auth, get_all, get_by_id, login, registration, update_auth_user
@@ -25,9 +26,10 @@ async def login_user(user : AuthLoginSchema, db:Session = Depends(get_db)):
     return user
 
 
-@auth_router.get('/all/')
+@auth_router.get('/all/',response_model=list[AuthSchema])
 async def get_users(db:Session=Depends(get_db)):
     all_user = get_all(db,0,100)
+ 
     return all_user
 
 

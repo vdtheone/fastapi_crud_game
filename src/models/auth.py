@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from src.config import Base
+from sqlalchemy.orm import relationship
 
 
 class Auth(Base):
@@ -13,4 +14,6 @@ class Auth(Base):
     created_at : DateTime = Column(DateTime)
     updated_at : DateTime = Column(DateTime)
 
+    # Establishing the relationship with User
+    user = relationship("User", back_populates="auth")  
     

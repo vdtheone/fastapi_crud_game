@@ -31,14 +31,6 @@ async def create_user(user: UserCreateSchema, db:Session = Depends(get_db)):
     return {"user":new_user, "message":"user created"}
 
 
-# @user_router.post("/create")
-# async def register_user(name: str = Form(...), age: int = Form(...)):
-#     db = SessionLocal()
-#     user_data = UserCreateSchema(name=name, age=age)
-#     new_user = create_new_user(db, user_data)
-#     return {"user":new_user, "message":"user created"}
-
-
 @user_router.get("/user/{id}")
 async def user_by_id(id:int, db:Session = Depends(get_db)):
     user = get_user_by_id(db,id)

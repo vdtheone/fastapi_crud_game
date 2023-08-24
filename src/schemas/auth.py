@@ -1,5 +1,6 @@
 
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -14,6 +15,11 @@ class AuthSchema(BaseModel):
  
     class Config:
         from_attributes = True
+
+
+class AuthTotalCountSchema(BaseModel):
+    total_user : Optional[int] = None
+
 
 
 class AuthCreateSchema(BaseModel):

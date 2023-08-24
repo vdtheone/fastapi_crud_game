@@ -1,9 +1,12 @@
 from datetime import date
 from sqlalchemy.orm import Session
+from src.config import SessionLocal
+from src.models.competition import Competition
 from src.models.user import User
-from src.schemas.user import UserCreateSchema, UserSchema
+from src.models.entry import Entry
+from src.schemas.user import UserCreateSchema, UserSchema, UserWithEntry
 
-
+from sqlalchemy.orm.collections import InstrumentedList
 
 #Get all user data
 def get_all_user(db:Session, skip:int=0, limit:int=100):
@@ -54,5 +57,30 @@ def delete_user(id:int, db:Session):
 def delete_all_user(db:Session):
     db.query(User).delete()
     db.commit()
+
+
+#get user with competition
+def user_with_competition(id:int, db:Session):
+    user = db.query(User).filter_by(id=id).first()
+
+
+    if user:
+        competition_list = []
+        c_list = []
+        for entry in user.entries:
+            blank_dict = {}
+            competition_list.append(entry.competition.name)
+            blank_dict['name'] = entry.competition.name
+            if not any(d['name'] == entry.competition.name for d in c_list):
+                c_list.append(blank_dict)
     
+        userResponce = UserWithEntry(
+            id = user.id,
+            name = user.name,
+            # competition = user.entries  
+            # competition = competition_list  
+            competition = c_list  
+        )
+        return userResponce
+
     

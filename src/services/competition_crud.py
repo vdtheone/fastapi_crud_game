@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, joinedload
 from src.models.competition import Competition
 from src.models.user import User
-from src.schemas.competition import CompetitionCreateSchema, CompetitionUpdateSchema
+from src.schemas.competition import CompetitionCreateSchema, CompetitionResponse, CompetitionUpdateSchema
 
 
 def get_all_competition(db:Session, skip:int = 0, limit:int = 100):
@@ -17,8 +17,6 @@ def create_competition(db:Session, competition:CompetitionCreateSchema):
 
 
 def get_competition_by_id(db:Session, competition_id:int):
-    # data = db.query(Competition).options(joinedload(User.id)).first()
-    # print("========",data)
     return db.query(Competition).filter(Competition.id == competition_id).first()
     
 
@@ -49,3 +47,16 @@ def delete_competition(db:Session, competition_id:int):
 def delete_all_competition(db:Session):
     db.query(Competition).delete()
     db.commit()
+
+
+def get_competiton_with_entry(id:int, db:Session):
+    competition = db.query(Competition).filter_by(id=id).first()
+    if not competition:
+        return {"message": "Competition not found"}
+
+    competition_response = CompetitionResponse(
+        name=competition.name,
+        id=competition.id,
+        entries=competition.entries
+    )
+    return competition_response

@@ -1,5 +1,8 @@
 from datetime import date
+from typing import List
 from pydantic import BaseModel
+
+from src.schemas.competition import CompetitionSchema, EntrySchema, CompetitionCreateSchema
 
 
 
@@ -33,3 +36,9 @@ class UserUpdateSchema(UserCreateSchema):
         from_attributes = True
 
 
+class UserWithEntry(BaseModel):
+    id:int
+    name:str
+    # competition : List[EntrySchema]
+    competition : list
+    # competition : list

@@ -1,6 +1,8 @@
 from typing import List
 from pydantic import BaseModel
 
+from src.schemas.entry import EntrySchema
+
 # from src.schemas.user import UserSchema
 
 
@@ -24,8 +26,10 @@ class CompetitionUpdateSchema(CompetitionCreateSchema):
         from_attributes = True
 
 
-# class CompetitionUserSchema(CompetitionSchema):
-#     users : List[UserSchema]
+class CompetitionResponse(BaseModel):
+    name: str
+    id: int
+    entries: List[EntrySchema]
     
 
 

@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from src.config import SessionLocal
-from src.schemas.user import UserCreateSchema, UserUpdateSchema
-from src.services.user_crud import create_new_user, delete_all_user, delete_user, get_all_user, get_user_by_id, update_user
+from src.schemas.user import UserCreateSchema, UserUpdateSchema, UserWithEntry
+from src.services.user_crud import create_new_user, delete_all_user, delete_user, get_all_user, get_user_by_id, update_user, user_with_competition
 from sqlalchemy.orm import Session
 
 from src.models.user import User
@@ -66,9 +66,13 @@ async def delete_all(db:Session = Depends(get_db)):
     return {"message":"Delete all users"}
 
 
-# @user_router.get("/register", response_class=HTMLResponse)
-# def registration_page(request: Request):
-#     return templates.TemplateResponse("registration.html", {"request": request})
+@user_router.get("/user_competitoin/{id}/", response_model=UserWithEntry)
+async def user_by_id_competition(id:int, db:Session = Depends(get_db)):
+    user = user_with_competition(id,db)
+    return user
+
+
+    
 
 
 # @user_router.get("/login", response_class=HTMLResponse)

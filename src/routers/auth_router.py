@@ -17,7 +17,7 @@ def get_db():
 @auth_router.post('/register')
 async def register_user(auth:AuthCreateSchema, db:Session = Depends(get_db)):
     new_auth_data = registration(auth,db)
-    return {"auth":new_auth_data, "message":"new user created"}
+    return new_auth_data
 
 
 @auth_router.post("/")

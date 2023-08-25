@@ -1,15 +1,15 @@
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from src.schemas.auth import (
     AuthCreateSchema,
     AuthLoginSchema,
-    AuthSchema,
     AuthUpdateSchema,
 )
 from src.models.auth import Auth
 from hashlib import sha256
 from email_validator import validate_email, EmailNotValidError
 from sqlalchemy.exc import IntegrityError
+
+from src.utils.jwt_tokena import create_access_token, create_refresh_token
 
 
 def hash_password(password: str):
@@ -23,9 +23,6 @@ def registration(auth: AuthCreateSchema, db: Session):
     try:
         emailObject = validate_email(auth.email)
         correct_email = emailObject.email
-        # check_email = db.query(Auth).filter(Auth.email == correct_email).first()
-        # if check_email:
-        #     raise HTTPException(status_code=500, detail="Email already in use")
         new_user = Auth(
             username=auth.username,
             email=correct_email,
@@ -37,9 +34,10 @@ def registration(auth: AuthCreateSchema, db: Session):
         db.commit()
         db.refresh(new_user)
         return new_user
+
     except EmailNotValidError as errorMsg:
         return {"status_code": 501, "Error": str(errorMsg)}
-    
+
     except IntegrityError as e:
         if "ix_auths_email" in str(e).lower():
             return {"Error": "Email address already exists."}
@@ -62,17 +60,39 @@ def login(db: Session, auth: AuthLoginSchema):
             if email_exist is None:
                 return {"message": "Username and password are wrong"}
             else:
-                return email_exist
+                # auth_dict = {str(key): str(val) for key, val in auth.model_dump().items()}
+                auth_dict = {
+                    'id':email_exist.id,
+                     'username': email_exist.username
+                }
+                return {
+                    "access_token": create_access_token(auth_dict),
+                    "refresh_token": create_refresh_token(auth_dict),
+                }
     except:
         user = (
             db.query(Auth)
             .filter(Auth.username == auth.username, Auth.hashed_password == hash_pass)
             .first()
         )
+
         if user is None:
             return {"message": "Username and password are wrong"}
         else:
-            return user
+            # auth_dict = {str(key): str(val) for key, val in auth.model_dump().items()}
+            auth_dict = {
+                'id':user.id,
+                'username':user.username
+            }
+
+            print("----------->>>",auth_dict)
+            print("====>>>",type(auth_dict))
+
+            return {
+                "access_token": create_access_token(auth_dict),
+                "refresh_token": create_refresh_token(auth_dict),
+            }
+
 
 
 def get_all(db: Session, skip: int = 0, limit: int = 100):

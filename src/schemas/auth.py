@@ -48,3 +48,9 @@ class AuthLoginSchema(BaseModel):
 
     class Config:
         form_attributes = True
+
+
+
+class TokenSchema(BaseModel):
+    access_token : str
+    refresh_token : str

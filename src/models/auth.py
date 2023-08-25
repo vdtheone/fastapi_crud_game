@@ -13,6 +13,7 @@ class Auth(Base):
     is_active : bool = Column(Boolean, default=True)
     created_at : DateTime = Column(DateTime)
     updated_at : DateTime = Column(DateTime)
+    is_deleted : bool = Column(Boolean, default=False)
 
     # Establishing the relationship with User
     user = relationship("User", back_populates="auth")  

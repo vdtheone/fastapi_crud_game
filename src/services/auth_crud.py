@@ -1,4 +1,3 @@
-from sqlalchemy.orm import Session
 from src.schemas.auth import (
     AuthCreateSchema,
     AuthLoginSchema,
@@ -7,8 +6,8 @@ from src.schemas.auth import (
 from src.models.auth import Auth
 from hashlib import sha256
 from email_validator import validate_email, EmailNotValidError
+from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-
 from src.utils.jwt_tokena import create_access_token, create_refresh_token
 
 
@@ -61,7 +60,6 @@ def login(db: Session, auth: AuthLoginSchema):
             if not email_exist.is_deleted == True or email_exist is None:
                 return {"message": "Username and password are wrong"}
             else:
-                # auth_dict = {str(key): str(val) for key, val in auth.model_dump().items()}
                 auth_dict = {"id": email_exist.id, "username": email_exist.username}
                 return {
                     "access_token": create_access_token(auth_dict),
@@ -73,15 +71,10 @@ def login(db: Session, auth: AuthLoginSchema):
             .filter(Auth.username == auth.username, Auth.hashed_password == hash_pass)
             .first()
         )
-        print("===============", user.is_deleted == True)
         if user.is_deleted == True or user is None:
             return {"message": "Username and password are wrong"}
         else:
-            # auth_dict = {str(key): str(val) for key, val in auth.model_dump().items()}
             auth_dict = {"id": user.id, "username": user.username}
-
-            # print("----------->>>",auth_dict)
-            # print("====>>>",type(auth_dict))
 
             return {
                 "access_token": create_access_token(auth_dict),
@@ -104,14 +97,6 @@ def update_auth_user(db: Session, id: int, auth: AuthUpdateSchema):
 
     update_auth_user.hashed_password = hash_password(auth.hashed_password)
     update_auth_user.updated_at = auth.updated_at
-
-    # if update_auth_user:
-    #     for key, value in auth.model_dump().items():
-    #         if key == "hashed_password" and value is not None:
-    #             hash = hash_password(value)
-    #             setattr(update_auth_user, key, hash)
-    #         else:
-    #             setattr(update_auth_user, key, value)
 
     db.commit()
     db.refresh(update_auth_user)

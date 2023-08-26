@@ -57,14 +57,12 @@ def login(db: Session, auth: AuthLoginSchema):
                 )
                 .first()
             )
-            if email_exist is None:
+
+            if not email_exist.is_deleted == True or email_exist is None:
                 return {"message": "Username and password are wrong"}
             else:
                 # auth_dict = {str(key): str(val) for key, val in auth.model_dump().items()}
-                auth_dict = {
-                    'id':email_exist.id,
-                     'username': email_exist.username
-                }
+                auth_dict = {"id": email_exist.id, "username": email_exist.username}
                 return {
                     "access_token": create_access_token(auth_dict),
                     "refresh_token": create_refresh_token(auth_dict),
@@ -75,24 +73,20 @@ def login(db: Session, auth: AuthLoginSchema):
             .filter(Auth.username == auth.username, Auth.hashed_password == hash_pass)
             .first()
         )
-
-        if user is None:
+        print("===============", user.is_deleted == True)
+        if user.is_deleted == True or user is None:
             return {"message": "Username and password are wrong"}
         else:
             # auth_dict = {str(key): str(val) for key, val in auth.model_dump().items()}
-            auth_dict = {
-                'id':user.id,
-                'username':user.username
-            }
+            auth_dict = {"id": user.id, "username": user.username}
 
-            print("----------->>>",auth_dict)
-            print("====>>>",type(auth_dict))
+            # print("----------->>>",auth_dict)
+            # print("====>>>",type(auth_dict))
 
             return {
                 "access_token": create_access_token(auth_dict),
                 "refresh_token": create_refresh_token(auth_dict),
             }
-
 
 
 def get_all(db: Session, skip: int = 0, limit: int = 100):
@@ -108,21 +102,25 @@ def get_by_id(db: Session, id: int):
 def update_auth_user(db: Session, id: int, auth: AuthUpdateSchema):
     update_auth_user = get_by_id(db, id)
 
-    if update_auth_user:
-        for key, value in auth.model_dump().items():
-            if key == "hashed_password" and value is not None:
-                hash = hash_password(value)
-                setattr(update_auth_user, key, hash)
-            else:
-                setattr(update_auth_user, key, value)
+    update_auth_user.hashed_password = hash_password(auth.hashed_password)
+    update_auth_user.updated_at = auth.updated_at
 
-        db.commit()
-        db.refresh(update_auth_user)
-        return update_auth_user
+    # if update_auth_user:
+    #     for key, value in auth.model_dump().items():
+    #         if key == "hashed_password" and value is not None:
+    #             hash = hash_password(value)
+    #             setattr(update_auth_user, key, hash)
+    #         else:
+    #             setattr(update_auth_user, key, value)
+
+    db.commit()
+    db.refresh(update_auth_user)
+    return update_auth_user
 
 
 def delete_auth(db: Session, id: int):
     delete_auth_user = get_by_id(db, id)
-    db.delete(delete_auth_user)
+    delete_auth_user.is_deleted = True
     db.commit()
+    db.refresh(delete_auth_user)
     return {"message": "user deleted successfully"}

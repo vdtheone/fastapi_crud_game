@@ -34,8 +34,8 @@ class AuthCreateSchema(BaseModel):
 
 
 class AuthUpdateSchema(BaseModel):
-    username: str
-    email : str
+    # username: str
+    # email : str
     hashed_password : str
     updated_at : datetime
     class Config:

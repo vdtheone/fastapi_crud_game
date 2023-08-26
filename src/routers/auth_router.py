@@ -19,6 +19,7 @@ from src.schemas.auth import (
 from src.utils.jwt_tokena import create_access_token_another_function
 from src.config import SessionLocal
 from jose import JWTError, jwt
+import os
 
 
 auth_router = APIRouter()
@@ -33,10 +34,10 @@ def get_db():
 
 
 # 32 bit secret key
-SECRET_KEY = "b5e4c5a927184e57344c3eebf92b3e557f3871054d1ff0b0950e67c8a592d929"
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 
 # encryption algorithm
-ALGORITHM = "HS256"
+ALGORITHM = os.environ.get("ALGORITHM")
 
 
 # the endpoint to get the token

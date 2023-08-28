@@ -8,7 +8,7 @@ from hashlib import sha256
 from email_validator import validate_email, EmailNotValidError
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from src.utils.jwt_tokena import create_access_token, create_refresh_token
+from src.utils.generate_jwt_token import create_access_token, create_refresh_token
 
 
 def hash_password(password: str):

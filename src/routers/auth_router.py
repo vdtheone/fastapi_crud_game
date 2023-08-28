@@ -16,7 +16,7 @@ from src.schemas.auth import (
     AuthSchema,
     AuthUpdateSchema,
 )
-from src.utils.jwt_tokena import create_access_token_another_function
+from src.utils.generate_jwt_token import create_access_token_another_function
 from src.config import SessionLocal
 from jose import JWTError, jwt
 import os

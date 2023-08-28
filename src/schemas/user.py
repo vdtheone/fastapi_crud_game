@@ -21,7 +21,7 @@ class UserSchema(BaseModel):
 
 
 class UserCreateSchema(BaseModel):
-    auth_id : int
+    # auth_id : int
     name : str
     age : int
     gender : str
@@ -31,7 +31,12 @@ class UserCreateSchema(BaseModel):
         from_attributes = True
 
 
-class UserUpdateSchema(UserCreateSchema):
+class UserUpdateSchema(BaseModel):
+    name : str
+    age : int
+    gender : str
+    date_of_birth : date
+
     class Config:
         from_attributes = True
 

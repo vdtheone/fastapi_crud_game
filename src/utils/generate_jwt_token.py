@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Union, Any
 from jose import jwt
 from dotenv import load_dotenv
+
 load_dotenv()
 
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
@@ -10,7 +11,7 @@ ALGORITHM = os.environ.get("ALGORITHM")
 JWT_REFRESH_SECRET_KEY = os.environ.get("JWT_REFRESH_SECRET_KEY")
 
 REFRESH_TOKEN_EXPIRE_MINUTES = 10080
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 300
 
 
 def create_access_token(subject: Union[dict, Any], expires_delta: int = None) -> str:
@@ -45,7 +46,7 @@ def create_refresh_token(subject: Union[dict, Any], expires_delta: int = None) -
 # for particular data
 def create_access_token_another_function(data: dict):
     to_encode = data.copy()
-    print("--------data----------",data)
+    print("--------data----------", data)
 
     # expire time of the token
     expire = datetime.utcnow() + timedelta(minutes=15)
@@ -54,4 +55,3 @@ def create_access_token_another_function(data: dict):
 
     # return the generated token
     return encoded_jwt
-

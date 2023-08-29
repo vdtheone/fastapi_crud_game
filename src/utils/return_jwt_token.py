@@ -20,6 +20,8 @@ def access_token_required(func):
                 raise HTTPException(status_code=500, detail="Request not found")
 
             access_token = request.headers.get("Authorization")
+            access_token = access_token.split()[1]
+            
             if access_token is None:
                 # Handle the case where no access token is provided
                 raise HTTPException(
@@ -34,6 +36,8 @@ def access_token_required(func):
             raise HTTPException(status_code=401, detail="Token Expired")
         except JWTError:
             raise HTTPException(status_code=401, detail="Provide valid Token")
+        except IndexError:
+            raise HTTPException(status_code=401, detail="list index out of range in token")
         except HTTPException as e:
             raise e
         except Exception as e:

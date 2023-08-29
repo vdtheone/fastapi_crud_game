@@ -1,5 +1,5 @@
 import os
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, status
 from jose import ExpiredSignatureError, JWTError, jwt
 from sqlalchemy.orm import Session
 
@@ -16,13 +16,19 @@ def access_token_required(func):
                 if isinstance(i, Request):
                     request = i
                     break
-
             if request is None:
                 raise HTTPException(status_code=500, detail="Request not found")
 
             access_token = request.headers.get("Authorization")
+            if access_token is None:
+                # Handle the case where no access token is provided
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Access token is missing",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
             token = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
-            print(token)
             return func(*args)
         except ExpiredSignatureError as e:
             raise HTTPException(status_code=401, detail="Token Expired")

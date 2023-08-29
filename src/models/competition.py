@@ -13,4 +13,3 @@ class Competition(Base):
 
     # Establishing the relationship with Entry
     entries = relationship("Entry", back_populates="competition")
-

@@ -21,6 +21,3 @@ class EntryCreateSchema(BaseModel):
 class EntryUpdateSchema(EntryCreateSchema):
     class Config:
         from_attributes = True
-
-
-

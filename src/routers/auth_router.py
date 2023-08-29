@@ -44,7 +44,7 @@ ALGORITHM = os.environ.get("ALGORITHM")
 @auth_router.get("/get_token")
 async def get_token():
     # data to be signed using token
-    data = {'username': 'seema@gmail.com', 'password': 'seema'}
+    data = {"username": "seema@gmail.com", "password": "seema"}
     token = create_access_token_another_function(data=data)
     return {"Authorization ": token}
 
@@ -54,7 +54,7 @@ async def get_token():
 async def verify_token(token: str):
     try:
         # try to decode the token, it will raise error if the token is not correct
-        print("+++++++token",token)
+        print("+++++++token", token)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:

@@ -16,8 +16,6 @@ class Entry(Base):
 
     # Establishing the relationship with User
     user = relationship("User", back_populates="entries")
-    
+
     # Establishing the relationship with Competition
     competition = relationship("Competition", back_populates="entries")
-
-    

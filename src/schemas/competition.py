@@ -30,10 +30,3 @@ class CompetitionResponse(BaseModel):
     name: str
     id: int
     entries: List[EntrySchema]
-    
-
-
-
-
-
-

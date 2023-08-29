@@ -1,3 +1,4 @@
+from fastapi import HTTPException, Request, status
 from src.schemas.auth import (
     AuthCreateSchema,
     AuthLoginSchema,
@@ -9,6 +10,13 @@ from email_validator import validate_email, EmailNotValidError
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from src.utils.generate_jwt_token import create_access_token, create_refresh_token
+from src.utils.return_jwt_token import access_token_required
+from jose import jwt
+import os
+
+
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+ALGORITHM = os.environ.get("ALGORITHM")
 
 
 def hash_password(password: str):
@@ -20,8 +28,8 @@ def hash_password(password: str):
 
 def registration(auth: AuthCreateSchema, db: Session):
     try:
-        emailObject = validate_email(auth.email)
-        correct_email = emailObject.email
+        email_object = validate_email(auth.email)
+        correct_email = email_object.email
         new_user = Auth(
             username=auth.username,
             email=correct_email,
@@ -35,30 +43,36 @@ def registration(auth: AuthCreateSchema, db: Session):
         return new_user
 
     except EmailNotValidError as errorMsg:
-        return {"status_code": 501, "Error": str(errorMsg)}
+        raise HTTPException(status_code=501, detail=str(errorMsg))
 
     except IntegrityError as e:
         if "ix_auths_email" in str(e).lower():
-            return {"Error": "Email address already exists."}
+            raise HTTPException(status_code=501, detail="Email address already exists.")
         if "ix_auths_username" in str(e).lower():
-            return {"Error": "Username address already exists."}
+            raise HTTPException(
+                status_code=501, detail="Username address already exists."
+            )
 
 
-def login(db: Session, auth: AuthLoginSchema):
-    hash_pass = hash_password(auth.password)
+def login_user(db: Session, auth: AuthLoginSchema):
     try:
-        emailObject = validate_email(auth.username)
-        if emailObject:
+        hash_pass = hash_password(auth.password)
+        email_object = validate_email(auth.username)
+        if email_object:
             email_exist = (
                 db.query(Auth)
                 .filter(
-                    Auth.email == emailObject.email, Auth.hashed_password == hash_pass
+                    Auth.email == email_object.email, Auth.hashed_password == hash_pass
                 )
                 .first()
             )
 
-            if not email_exist.is_deleted == True or email_exist is None:
-                return {"message": "Username and password are wrong"}
+            if email_exist is None or email_exist.is_deleted:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Incorrect username and password",
+                    headers={"WWW-Authenticate": "Basic"},
+                )
             else:
                 auth_dict = {"id": email_exist.id, "username": email_exist.username}
                 return {
@@ -71,29 +85,37 @@ def login(db: Session, auth: AuthLoginSchema):
             .filter(Auth.username == auth.username, Auth.hashed_password == hash_pass)
             .first()
         )
-        if user.is_deleted == True or user is None:
-            return {"message": "Username and password are wrong"}
+        if user is None or user.is_deleted:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username and password",
+                headers={"WWW-Authenticate": "Basic"},
+            )
         else:
             auth_dict = {"id": user.id, "username": user.username}
-
             return {
                 "access_token": create_access_token(auth_dict),
                 "refresh_token": create_refresh_token(auth_dict),
             }
 
-
-def get_all(db: Session, skip: int = 0, limit: int = 100):
+@access_token_required
+def get_all(request:Request, db: Session, skip: int = 0, limit: int = 100):
     users = db.query(Auth).offset(skip).limit(limit).all()
     total_user = db.query(Auth).count()
     return users
 
+@access_token_required
+def get_by_id(request:Request, db: Session, id: int):
+    access_token = request.headers.get("Authorization")
+    payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
+    auth_user = db.query(Auth).filter(Auth.id == id, Auth.id == payload.get('id')).first()
+    if auth_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return auth_user
 
-def get_by_id(db: Session, id: int):
-    return db.query(Auth).filter(Auth.id == id).first()
 
-
-def update_auth_user(db: Session, id: int, auth: AuthUpdateSchema):
-    update_auth_user = get_by_id(db, id)
+def update_auth_user(request:Request, db: Session, id: int, auth: AuthUpdateSchema):
+    update_auth_user = get_by_id(request, db, id)
 
     update_auth_user.hashed_password = hash_password(auth.hashed_password)
     update_auth_user.updated_at = auth.updated_at
@@ -103,8 +125,8 @@ def update_auth_user(db: Session, id: int, auth: AuthUpdateSchema):
     return update_auth_user
 
 
-def delete_auth(db: Session, id: int):
-    delete_auth_user = get_by_id(db, id)
+def delete_auth(request:Request, db: Session, id: int):
+    delete_auth_user = get_by_id(request, db, id)
     delete_auth_user.is_deleted = True
     db.commit()
     db.refresh(delete_auth_user)

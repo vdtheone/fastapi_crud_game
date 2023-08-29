@@ -54,7 +54,6 @@ async def get_token():
 async def verify_token(token: str):
     try:
         # try to decode the token, it will raise error if the token is not correct
-        print("+++++++token", token)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:

@@ -37,8 +37,7 @@ async def get_users(request: Request, db: Session = Depends(get_db)):
 
 @user_router.post("/create/")
 async def create_user(
-    request: Request, user: UserCreateSchema, db: Session = Depends(get_db)
-):
+    request: Request, user: UserCreateSchema, db: Session = Depends(get_db)):
     new_user = create_new_user(request, db, user)
     return {"user": new_user}
 
@@ -51,14 +50,12 @@ async def user_by_id(request: Request, id: int, db: Session = Depends(get_db)):
 
 @user_router.put("/update/{id}")
 async def updat_user(
-    request: Request, id: int, user: UserUpdateSchema, db: Session = Depends(get_db)
-):
+    request: Request, id: int, user: UserUpdateSchema, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.id == id).first()
 
     if not existing_user:
         raise HTTPException(status_code=404, detail="Entry not found")
     else:
-        # updated_user = update_user(id, db, user.name, user.age)
         updated_user = update_user(request, id, db, user)
         return updated_user
 
@@ -78,8 +75,7 @@ async def delete_all(request: Request, db: Session = Depends(get_db)):
 
 @user_router.get("/user_competitoin/{id}/", response_model=UserWithEntry)
 async def user_by_id_competition(
-    request: Request, id: int, db: Session = Depends(get_db)
-):
+    request: Request, id: int, db: Session = Depends(get_db)):
     user = user_with_competition(request, id, db)
     return user
 

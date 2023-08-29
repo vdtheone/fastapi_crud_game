@@ -26,7 +26,7 @@ def create_access_token(subject: Union[dict, Any], expires_delta: int = None) ->
         to_encode.update({"exp": expires_delta})
     # to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, ALGORITHM)
-    return encoded_jwt
+    return f"{'Bearer '}{encoded_jwt}"
 
 
 def create_refresh_token(subject: Union[dict, Any], expires_delta: int = None) -> str:

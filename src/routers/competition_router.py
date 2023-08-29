@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from src.models.competition import Competition
 from src.config import SessionLocal
 from sqlalchemy.orm import Session
@@ -31,20 +31,20 @@ def get_db():
 
 
 @competition_router.get("/")
-async def all_competition(db: Session = Depends(get_db)):
-    all_comp = get_all_competition(db, 0, 100)
+async def all_competition(request:Request, db: Session = Depends(get_db)):
+    all_comp = get_all_competition(request, db, 0, 100)
     return all_comp
 
 
 @competition_router.post("/create/")
-async def create(competition: CompetitionCreateSchema, db: Session = Depends(get_db)):
-    new_competition = create_competition(db, competition)
+async def create(request:Request, competition: CompetitionCreateSchema, db: Session = Depends(get_db)):
+    new_competition = create_competition(request, db, competition)
     return {"competition": new_competition, "message": "competition created"}
 
 
 @competition_router.get("/get/{id}", response_model=CompetitionSchema)
-async def competition_by_id(id: int, db: Session = Depends(get_db)):
-    competition = get_competition_by_id(db, id)
+async def competition_by_id(request:Request, id: int, db: Session = Depends(get_db)):
+    competition = get_competition_by_id(request, db, id)
     if competition is None:
         return {"message": "Not found"}
     else:
@@ -52,26 +52,24 @@ async def competition_by_id(id: int, db: Session = Depends(get_db)):
 
 
 @competition_router.put("/competition/{id}")
-async def update(
-    id: int, competition: CompetitionUpdateSchema, db: Session = Depends(get_db)
-):
-    updated_competition = update_competiton(db, competition, id)
+async def update(request:Request, id: int, competition: CompetitionUpdateSchema, db: Session = Depends(get_db)):
+    updated_competition = update_competiton(request, db, competition, id)
     return updated_competition
 
 
 @competition_router.delete("/delete/{id}")
-async def delete(id: int, db: Session = Depends(get_db)):
-    deleted_competition = delete_competition(db, id)
+async def delete(request:Request, id: int, db: Session = Depends(get_db)):
+    deleted_competition = delete_competition(request, db, id)
     return {"message": deleted_competition}
 
 
 @competition_router.delete("/delete_all/")
-async def delete_all(db: Session = Depends(get_db)):
-    delete_all_competition(db)
+async def delete_all(request:Request, db: Session = Depends(get_db)):
+    delete_all_competition(request, db)
     return {"message": "all competitions deleted"}
 
 
 @competition_router.get("/competition/{id}", response_model=CompetitionResponse)
-async def competition_by_id_with_entry(id: int, db: Session = Depends(get_db)):
-    competition_response = get_competiton_with_entry(id, db)
+async def competition_by_id_with_entry(request:Request, id: int, db: Session = Depends(get_db)):
+    competition_response = get_competiton_with_entry(request, id, db)
     return competition_response

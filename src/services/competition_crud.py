@@ -1,4 +1,5 @@
-from sqlalchemy.orm import Session, joinedload
+from fastapi import HTTPException, Request
+from sqlalchemy.orm import Session
 from src.models.competition import Competition
 from src.models.user import User
 from src.schemas.competition import (
@@ -6,13 +7,16 @@ from src.schemas.competition import (
     CompetitionResponse,
     CompetitionUpdateSchema,
 )
+from src.utils.return_jwt_token import access_token_required
 
 
-def get_all_competition(db: Session, skip: int = 0, limit: int = 100):
+@access_token_required
+def get_all_competition(request:Request, db: Session, skip: int = 0, limit: int = 100):
     return db.query(Competition).offset(skip).limit(limit).all()
 
 
-def create_competition(db: Session, competition: CompetitionCreateSchema):
+@access_token_required
+def create_competition(request:Request, db: Session, competition: CompetitionCreateSchema):
     new_competition = Competition(name=competition.name)
     db.add(new_competition)
     db.commit()
@@ -20,12 +24,17 @@ def create_competition(db: Session, competition: CompetitionCreateSchema):
     return new_competition
 
 
-def get_competition_by_id(db: Session, competition_id: int):
-    return db.query(Competition).filter(Competition.id == competition_id).first()
+@access_token_required
+def get_competition_by_id(request:Request, db: Session, competition_id: int):
+    competition = db.query(Competition).filter(Competition.id == competition_id).first()
+    if competition is None:
+        raise HTTPException(status_code=404, detail="competition not found")
+    return competition
 
 
-def update_competiton(db: Session, competition: CompetitionUpdateSchema, id: int):
-    comp = get_competition_by_id(db, id)
+@access_token_required
+def update_competiton(request:Request, db: Session, competition: CompetitionUpdateSchema, id: int):
+    comp = get_competition_by_id(request, db, id)
     if comp:
         comp.id = comp.id
         comp.name = competition.name
@@ -34,30 +43,37 @@ def update_competiton(db: Session, competition: CompetitionUpdateSchema, id: int
         db.refresh(comp)
         return {"updated_competition": comp, "message": "Competition is updated"}
     else:
-        return {"message": "Competition not found"}
+        raise HTTPException(status_code=404, detail="competition not found")
 
 
-def delete_competition(db: Session, competition_id: int):
-    com = get_competition_by_id(db, competition_id)
+def delete_competition(request:Request, db: Session, competition_id: int):
+    com = get_competition_by_id(request, db, competition_id)
     if com:
         db.delete(com)
         db.commit()
         return "competition deleted"
     else:
-        return "competition not found"
+        raise HTTPException(status_code=404, detail="competition not found")
 
 
-def delete_all_competition(db: Session):
+@access_token_required
+def delete_all_competition(request:Request, db: Session):
     db.query(Competition).delete()
     db.commit()
 
 
-def get_competiton_with_entry(id: int, db: Session):
+@access_token_required
+def get_competiton_with_entry(request:Request, id: int, db: Session):
     competition = db.query(Competition).filter_by(id=id).first()
     if not competition:
-        return {"message": "Competition not found"}
+        raise HTTPException(status_code=404, detail="competition not found")
 
+    print(type(competition.entries))
+
+    # check if user_id is null or not in entries tale
+    entries = [i for i in competition.entries if i.user_id is not None and i.competition_id is not None]
+    
     competition_response = CompetitionResponse(
-        name=competition.name, id=competition.id, entries=competition.entries
+        name=competition.name, id=competition.id, entries=entries
     )
     return competition_response

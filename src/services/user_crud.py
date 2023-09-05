@@ -1,12 +1,13 @@
 import os
+
 from fastapi import HTTPException, Request
-from sqlalchemy.orm import Session
 from jose import jwt
+from sqlalchemy.orm import Session
+
 from src.models.auth import Auth
 from src.models.user import User
 from src.schemas.user import UserCreateSchema, UserUpdateSchema, UserWithEntry
 from src.utils.return_jwt_token import access_token_required
-
 
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")

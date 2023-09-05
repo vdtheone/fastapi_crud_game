@@ -1,10 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from src.routers import auth_router
-from src.routers import competition_router
-from src.routers import entry_router
-from src.routers import user_router
+from src.routers import auth_router, competition_router, entry_router, user_router
 
 src = FastAPI()
 

@@ -1,7 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+import os
 
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
+from src.config import SessionLocal
+from src.schemas.auth import (
+    AuthCreateSchema,
+    AuthLoginSchema,
+    AuthSchema,
+    AuthUpdateSchema,
+)
 from src.services.auth_crud import (
     delete_auth,
     get_all,
@@ -10,17 +19,7 @@ from src.services.auth_crud import (
     registration,
     update_auth_user,
 )
-from src.schemas.auth import (
-    AuthCreateSchema,
-    AuthLoginSchema,
-    AuthSchema,
-    AuthUpdateSchema,
-)
 from src.utils.generate_jwt_token import create_access_token_another_function
-from src.config import SessionLocal
-from jose import JWTError, jwt
-import os
-
 
 auth_router = APIRouter()
 
@@ -76,24 +75,26 @@ async def login(user: AuthLoginSchema, db: Session = Depends(get_db)):
 
 
 @auth_router.get("/all/", response_model=list[AuthSchema])
-async def get_users(request:Request, db: Session = Depends(get_db)):
+async def get_users(request: Request, db: Session = Depends(get_db)):
     all_user = get_all(request, db, 0, 100)
     return all_user
 
 
 @auth_router.get("/{id}")
-async def get_auth_by_id(request:Request, id: int, db: Session = Depends(get_db)):
+async def get_auth_by_id(request: Request, id: int, db: Session = Depends(get_db)):
     user_by_id = get_by_id(request, db, id)
     return user_by_id
 
 
 @auth_router.put("/update/{id}")
-async def update(request:Request, id: int, auth: AuthUpdateSchema, db: Session = Depends(get_db)):
+async def update(
+    request: Request, id: int, auth: AuthUpdateSchema, db: Session = Depends(get_db)
+):
     updated_auth_user = update_auth_user(request, db, id, auth)
     return updated_auth_user
 
 
 @auth_router.delete("/delete/{id}")
-async def delete(request:Request, id: int, db: Session = Depends(get_db)):
+async def delete(request: Request, id: int, db: Session = Depends(get_db)):
     deleted = delete_auth(request, db, id)
     return deleted

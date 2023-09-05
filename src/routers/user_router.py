@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, Form, HTTPException, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
+
 from src.config import SessionLocal
+from src.models.user import User
 from src.schemas.user import UserCreateSchema, UserUpdateSchema, UserWithEntry
 from src.services.user_crud import (
     create_new_user,
@@ -12,9 +14,6 @@ from src.services.user_crud import (
     update_user,
     user_with_competition,
 )
-from sqlalchemy.orm import Session
-from src.models.user import User
-
 
 user_router = APIRouter()
 
@@ -37,7 +36,8 @@ async def get_users(request: Request, db: Session = Depends(get_db)):
 
 @user_router.post("/create/")
 async def create_user(
-    request: Request, user: UserCreateSchema, db: Session = Depends(get_db)):
+    request: Request, user: UserCreateSchema, db: Session = Depends(get_db)
+):
     new_user = create_new_user(request, db, user)
     return {"user": new_user}
 
@@ -50,7 +50,8 @@ async def user_by_id(request: Request, id: int, db: Session = Depends(get_db)):
 
 @user_router.put("/update/{id}")
 async def updat_user(
-    request: Request, id: int, user: UserUpdateSchema, db: Session = Depends(get_db)):
+    request: Request, id: int, user: UserUpdateSchema, db: Session = Depends(get_db)
+):
     existing_user = db.query(User).filter(User.id == id).first()
 
     if not existing_user:
@@ -75,7 +76,8 @@ async def delete_all(request: Request, db: Session = Depends(get_db)):
 
 @user_router.get("/user_competitoin/{id}/", response_model=UserWithEntry)
 async def user_by_id_competition(
-    request: Request, id: int, db: Session = Depends(get_db)):
+    request: Request, id: int, db: Session = Depends(get_db)
+):
     user = user_with_competition(request, id, db)
     return user
 

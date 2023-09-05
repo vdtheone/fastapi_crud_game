@@ -1,8 +1,9 @@
 import os
 from datetime import datetime, timedelta
-from typing import Union, Any
-from jose import jwt
+from typing import Any, Union
+
 from dotenv import load_dotenv
+from jose import jwt
 
 load_dotenv()
 

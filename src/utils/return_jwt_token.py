@@ -1,8 +1,7 @@
 import os
+
 from fastapi import HTTPException, Request, status
 from jose import ExpiredSignatureError, JWTError, jwt
-from sqlalchemy.orm import Session
-
 
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
@@ -21,7 +20,7 @@ def access_token_required(func):
 
             access_token = request.headers.get("Authorization")
             access_token = access_token.split()[1]
-            
+
             if access_token is None:
                 # Handle the case where no access token is provided
                 raise HTTPException(
@@ -30,17 +29,19 @@ def access_token_required(func):
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
-            token = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
+            jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
             return func(*args)
-        except ExpiredSignatureError as e:
+        except ExpiredSignatureError:
             raise HTTPException(status_code=401, detail="Token Expired")
         except JWTError:
             raise HTTPException(status_code=401, detail="Provide valid Token")
         except IndexError:
-            raise HTTPException(status_code=401, detail="list index out of range in token")
+            raise HTTPException(
+                status_code=401, detail="list index out of range in token"
+            )
         except HTTPException as e:
             raise e
-        except Exception as e:
+        except Exception:
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
     return inner

@@ -1,12 +1,6 @@
 from datetime import date
-from typing import List
-from pydantic import BaseModel
 
-from src.schemas.competition import (
-    CompetitionSchema,
-    EntrySchema,
-    CompetitionCreateSchema,
-)
+from pydantic import BaseModel
 
 
 class UserSchema(BaseModel):
